@@ -1,0 +1,16 @@
+﻿# Python artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local environment
+.venv/
+.env
+
+# Generated API data
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
