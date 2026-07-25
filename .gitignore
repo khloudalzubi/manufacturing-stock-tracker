@@ -8,8 +8,9 @@ __pycache__/
 .venv/
 .env
 
-# Generated API data
+# Generated API data and logs
 data/
+logs/
 
 # OS files
 .DS_Store

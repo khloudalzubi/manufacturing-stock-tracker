@@ -1,0 +1,50 @@
+{
+  "CAT": {
+    "symbol": "CAT",
+    "name": "Caterpillar Inc.",
+    "exchange": "NYSE",
+    "currency": "USD",
+    "datetime": "2026-07-25",
+    "timestamp": 1785000000,
+    "open": "354.00",
+    "high": "358.20",
+    "low": "352.75",
+    "close": "356.42",
+    "volume": "2456789",
+    "previous_close": "354.24",
+    "change": "2.18",
+    "percent_change": "0.6154"
+  },
+  "DE": {
+    "symbol": "DE",
+    "name": "Deere & Company",
+    "exchange": "NYSE",
+    "currency": "USD",
+    "datetime": "2026-07-25",
+    "timestamp": 1785000000,
+    "open": "403.00",
+    "high": "404.25",
+    "low": "399.80",
+    "close": "401.15",
+    "volume": "1122334",
+    "previous_close": "402.70",
+    "change": "-1.55",
+    "percent_change": "-0.3849"
+  },
+  "HON": {
+    "symbol": "HON",
+    "name": "Honeywell International Inc.",
+    "exchange": "NASDAQ",
+    "currency": "USD",
+    "datetime": "2026-07-25",
+    "timestamp": 1785000000,
+    "open": "213.50",
+    "high": "215.10",
+    "low": "212.95",
+    "close": "214.80",
+    "volume": "1890000",
+    "previous_close": "213.88",
+    "change": "0.92",
+    "percent_change": "0.4302"
+  }
+}

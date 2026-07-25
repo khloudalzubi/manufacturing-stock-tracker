@@ -1,43 +1,44 @@
-﻿# Sprint 1: Reliable Alpha Vantage Data Pipeline
+# Sprint 1: Twelve Data Watchlist Foundation
 
 ## Problem Statement
 
-Build on the first Alpha Vantage command-line tool so the project can reliably collect, validate, and process manufacturing stock data in a way that is safe to grow into the final course project.
+Build a Python command-line tool that collects quote data for a manufacturing stock watchlist, saves the raw API response as evidence, and creates a processed CSV for later dashboard/report use.
 
 ## User Requirements
 
-1. The user can run the project as a repeatable command for a stock ticker.
-2. The tool saves the raw Alpha Vantage response in `data/raw/`.
-3. The tool saves a processed CSV version in `data/processed/`.
-4. The tool fails clearly when the API key is missing or the API response is not usable.
-5. The project includes enough documentation for another person to install and run the first version.
+1. The user can provide one ticker or a comma-separated list of manufacturing ticker symbols.
+2. The tool calls Twelve Data for the selected symbols.
+3. The tool saves the raw Twelve Data response in `data/raw/`.
+4. The tool writes cleaned quote rows to `data/processed/`.
+5. The project includes clear setup and run instructions.
 
 ## Plan
 
-Keep the first sprint narrow and focused on the foundation. The command should continue to use Alpha Vantage daily stock data for a manufacturing-related ticker such as `CAT`. The code should separate API access, processing, and command-line behavior so later sprints can add tests, multiple tickers, richer summaries, and a dashboard without rewriting the whole project.
+Keep the first sprint focused on a reliable project foundation. The command should use Twelve Data because it supports comma-separated symbols for quote requests, which fits the manufacturing watchlist direction better than the earlier Alpha Vantage and FMP attempts. Separate API access, processing, and command-line behavior so later sprints can add validation, tests, logging, and a dashboard without rewriting the project.
 
 ## Tasks
 
-1. Confirm the `uv` project runs through the configured command.
-2. Confirm `.env.example` exists and `.env` is ignored by Git.
-3. Confirm generated API output is written under `data/raw/` and `data/processed/`.
-4. Confirm `data/`, `.env`, and `.venv/` are ignored by Git.
-5. Review README setup and run instructions for a new user.
-6. Run the command with a real Alpha Vantage key and inspect the generated output.
+1. Configure the project as a uv command-line package.
+2. Add `.env.example` with a placeholder `TWELVE_DATA_API_KEY`.
+3. Read the real API key from `.env` without committing it.
+4. Call the Twelve Data quote endpoint for the requested watchlist.
+5. Save the raw JSON response under `data/raw/`.
+6. Save processed quote data under `data/processed/`.
+7. Document setup, example requests, and run commands in README.
 
 ## Out of Scope
 
-- Multi-ticker comparison.
-- Dashboard or report generation.
-- Automated tests and GitHub Actions.
-- PyPI publishing.
-- Long-term data storage beyond generated raw and processed files.
+- Trading or broker account integration.
+- Investment advice or buy/sell recommendations.
+- Long-term storage in a database.
+- Automated scheduling.
+- A deployed dashboard.
 
 ## Definition of Done
 
-- The repository is a clean `uv` project with a command entry point.
-- The command successfully calls Alpha Vantage for at least one ticker.
-- The command saves one raw JSON response and one processed CSV locally.
-- Secrets and generated data are excluded from Git.
-- README explains the API, example request, response contents, setup, and run command.
-- The first sprint is committed and pushed to the public GitHub repository.
+- The command runs through `uv run manufacturing-stock-tracker`.
+- The command can request multiple manufacturing tickers in one run.
+- Raw API output is saved in `data/raw/`.
+- Processed CSV output is saved in `data/processed/`.
+- `.env`, `.venv/`, `data/`, and `logs/` are ignored by Git.
+- README explains the API, API docs link, example request, setup, run command, and project direction.
