@@ -1,0 +1,47 @@
+﻿{
+  "CAT": {
+    "meta": {
+      "symbol": "CAT",
+      "interval": "1day",
+      "currency": "USD",
+      "exchange": "NYSE",
+      "type": "Common Stock"
+    },
+    "values": [
+      {"datetime": "2026-07-25", "open": "110.00", "high": "113.00", "low": "109.00", "close": "112.00", "volume": "1000"},
+      {"datetime": "2026-07-24", "open": "105.00", "high": "111.00", "low": "104.00", "close": "110.00", "volume": "900"},
+      {"datetime": "2026-07-23", "open": "100.00", "high": "106.00", "low": "99.00", "close": "105.00", "volume": "800"}
+    ],
+    "status": "ok"
+  },
+  "DE": {
+    "meta": {
+      "symbol": "DE",
+      "interval": "1day",
+      "currency": "USD",
+      "exchange": "NYSE",
+      "type": "Common Stock"
+    },
+    "values": [
+      {"datetime": "2026-07-25", "open": "196.00", "high": "198.00", "low": "190.00", "close": "195.00", "volume": "1100"},
+      {"datetime": "2026-07-24", "open": "204.00", "high": "205.00", "low": "197.00", "close": "200.00", "volume": "1000"},
+      {"datetime": "2026-07-23", "open": "210.00", "high": "212.00", "low": "202.00", "close": "205.00", "volume": "950"}
+    ],
+    "status": "ok"
+  },
+  "HON": {
+    "meta": {
+      "symbol": "HON",
+      "interval": "1day",
+      "currency": "USD",
+      "exchange": "NASDAQ",
+      "type": "Common Stock"
+    },
+    "values": [
+      {"datetime": "2026-07-25", "open": "52.00", "high": "53.00", "low": "51.00", "close": "52.00", "volume": "1200"},
+      {"datetime": "2026-07-24", "open": "51.00", "high": "52.00", "low": "50.00", "close": "51.00", "volume": "1100"},
+      {"datetime": "2026-07-23", "open": "50.00", "high": "51.00", "low": "49.00", "close": "50.00", "volume": "1000"}
+    ],
+    "status": "ok"
+  }
+}

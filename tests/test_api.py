@@ -1,7 +1,13 @@
-import pytest
+﻿import pytest
 import requests
 
-from manufacturing_stock_tracker.api import TWELVE_DATA_QUOTE_URL, TwelveDataError, fetch_quotes
+from manufacturing_stock_tracker.api import (
+    TWELVE_DATA_QUOTE_URL,
+    TWELVE_DATA_TIME_SERIES_URL,
+    TwelveDataError,
+    fetch_quotes,
+    fetch_time_series,
+)
 
 
 class FakeResponse:
@@ -30,6 +36,31 @@ def test_fetch_quotes_sends_expected_watchlist_request_without_exposing_key(monk
             "url": TWELVE_DATA_QUOTE_URL,
             "params": {
                 "symbol": "CAT,DE,HON",
+                "apikey": "secret-key",
+            },
+            "timeout": 20,
+        }
+    ]
+
+
+def test_fetch_time_series_sends_expected_historical_request(monkeypatch) -> None:
+    calls = []
+    payload = {"CAT": {"meta": {"symbol": "CAT"}, "values": []}}
+
+    def fake_get(url, params, timeout):
+        calls.append({"url": url, "params": params, "timeout": timeout})
+        return FakeResponse(payload)
+
+    monkeypatch.setattr("manufacturing_stock_tracker.api.requests.get", fake_get)
+
+    assert fetch_time_series(["CAT", "DE"], "secret-key", "1day", 30) == payload
+    assert calls == [
+        {
+            "url": TWELVE_DATA_TIME_SERIES_URL,
+            "params": {
+                "symbol": "CAT,DE",
+                "interval": "1day",
+                "outputsize": 30,
                 "apikey": "secret-key",
             },
             "timeout": 20,
@@ -76,3 +107,8 @@ def test_fetch_quotes_turns_request_exception_into_sanitized_error(monkeypatch) 
 def test_fetch_quotes_requires_api_key() -> None:
     with pytest.raises(TwelveDataError, match="TWELVE_DATA_API_KEY"):
         fetch_quotes(["CAT"], "")
+
+
+def test_fetch_time_series_requires_at_least_two_observations() -> None:
+    with pytest.raises(TwelveDataError, match="at least 2"):
+        fetch_time_series(["CAT"], "secret-key", outputsize=1)

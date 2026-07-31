@@ -1,3 +1,5 @@
+﻿"""Logging configuration for the project package logger."""
+
 import logging
 import sys
 from pathlib import Path
@@ -12,6 +14,7 @@ class LoggingSetupError(RuntimeError):
 
 
 def configure_logging(level: str = "INFO", log_file: str | None = None) -> None:
+    """Configure console and optional file logging for project loggers."""
     numeric_level = getattr(logging, level.upper(), logging.INFO)
     package_logger = logging.getLogger(PACKAGE_LOGGER_NAME)
     _reset_handlers(package_logger)
@@ -45,6 +48,7 @@ def configure_logging(level: str = "INFO", log_file: str | None = None) -> None:
 
 
 def _reset_handlers(logger: logging.Logger) -> None:
+    """Remove existing handlers so repeated configuration does not duplicate logs."""
     for handler in list(logger.handlers):
         logger.removeHandler(handler)
         handler.close()

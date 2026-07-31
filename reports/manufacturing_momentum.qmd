@@ -1,0 +1,118 @@
+---
+title: "Manufacturing Watchlist Momentum Report"
+author: "Khloud alZubi"
+format:
+  pdf:
+    toc: false
+    number-sections: false
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{python}
+#| echo: false
+#| output: false
+from datetime import UTC, datetime
+from pathlib import Path
+import sys
+
+import matplotlib.pyplot as plt
+
+sys.path.insert(0, str(Path.cwd() / "src"))
+
+from manufacturing_stock_tracker.reporting import (
+    load_history,
+    load_momentum,
+    load_quotes,
+    momentum_summary,
+    normalized_close_table,
+)
+
+history = load_history()
+momentum = load_momentum()
+quotes = load_quotes()
+summary = momentum_summary(momentum)
+normalized = normalized_close_table(history)
+rendered_at_text = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
+
+start_date_text = momentum["start_datetime"].min().strftime("%Y-%m-%d")
+end_date_text = momentum["end_datetime"].max().strftime("%Y-%m-%d")
+symbols_text = ", ".join(momentum["symbol"].tolist())
+strongest_return_text = f"{summary['strongest_return_percent']:.2f}%"
+weakest_return_text = f"{summary['weakest_return_percent']:.2f}%"
+average_return_text = f"{summary['average_return_percent']:.2f}%"
+```
+
+## Summary
+
+This report asks: **which major manufacturing and industrial companies showed the strongest recent stock momentum compared with their peers?** The watchlist contains `{python} symbols_text` and uses Twelve Data daily historical prices from `{python} start_date_text` through `{python} end_date_text`.
+
+The strongest performer over this collected period was **`{python} summary["strongest_symbol"]`**, with a period return of `{python} strongest_return_text`. The weakest performer was **`{python} summary["weakest_symbol"]`**, with a period return of `{python} weakest_return_text`. Across the watchlist, the average period return was `{python} average_return_text`.
+
+## Data Source And Parameters
+
+- Source API: Twelve Data `/time_series` and `/quote` endpoints.
+- Historical interval: `1day`.
+- Historical output size: 30 observations per symbol in the committed data.
+- Watchlist: `{python} symbols_text`.
+- Units: prices are in U.S. dollars per share where `currency` is `USD`; returns are percentages.
+- Report render date: `{python} rendered_at_text`.
+- Input files: `data/processed/manufacturing_watchlist_history.csv`, `data/processed/manufacturing_watchlist_momentum.csv`, and `data/processed/manufacturing_watchlist_quotes.csv`.
+
+## Momentum Ranking
+
+The table ranks symbols by period return from strongest to weakest. It keeps the report view focused on the core comparison: return, price range, and observation count.
+
+```{python}
+#| echo: false
+table = momentum[[
+    "symbol",
+    "period_return_percent",
+    "price_range_percent",
+    "observations",
+]].copy()
+table["period_return_percent"] = table["period_return_percent"].round(2)
+table["price_range_percent"] = table["price_range_percent"].round(2)
+table = table.rename(
+    columns={
+        "symbol": "Symbol",
+        "period_return_percent": "Return %",
+        "price_range_percent": "Range %",
+        "observations": "Days",
+    }
+)
+table
+```
+
+## Normalized Price Trend
+
+The figure indexes each symbol's first closing price to 100. Values above 100 mean the symbol rose relative to its starting point; values below 100 mean it fell.
+
+```{python}
+#| echo: false
+fig, ax = plt.subplots(figsize=(7.5, 4.5))
+normalized.plot(ax=ax, linewidth=2)
+ax.axhline(100, color="black", linewidth=0.8, linestyle="--")
+ax.set_title("Normalized Daily Close By Manufacturing Watchlist Symbol")
+ax.set_xlabel("Trading date")
+ax.set_ylabel("Normalized close, first observation = 100")
+ax.legend(title="Symbol", loc="best")
+fig.tight_layout()
+fig
+```
+
+## Interpretation
+
+The watchlist shows a mixed short-term manufacturing-sector picture. `{python} summary["positive_count"]` symbols had positive period returns, while `{python} summary["negative_count"]` symbols were negative and `{python} summary["flat_count"]` were flat. The normalized trend makes the comparison clearer because all symbols start from the same baseline, so the report emphasizes relative movement rather than raw share price.
+
+This report is not investment advice. It is a reproducible project artifact that demonstrates how the tool collects raw API evidence, validates and processes it, and turns the processed data into an analytical comparison.
+
+## Rebuild Command
+
+After restoring the project environment, rebuild this PDF with:
+
+```bash
+quarto render reports/manufacturing_momentum.qmd --to pdf
+```

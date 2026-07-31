@@ -1,4 +1,7 @@
-﻿# Python artifacts
+# Python artifacts
+dist/
+*.egg-info/
+build/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -9,8 +12,8 @@ __pycache__/
 .env
 
 # Generated API data and logs
-data/
 logs/
+tmp/
 
 # OS files
 .DS_Store
