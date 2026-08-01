@@ -1,4 +1,4 @@
-﻿"""Shared collection workflows used by the CLI, dashboard, and report."""
+"""Shared collection workflows used by the CLI, dashboard, and report."""
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -15,6 +15,7 @@ from manufacturing_stock_tracker.process import (
     save_json,
     summarize,
 )
+from manufacturing_stock_tracker.storage import save_quote_run
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +30,8 @@ class CollectionBatch:
     raw_path: Path
     processed_path: Path
     source: str
+    db_path: Path | None = None
+    db_run_id: int | None = None
 
 
 @dataclass
@@ -50,8 +53,9 @@ def collect_symbols(
     api_key: str,
     data_dir: Path = Path("data"),
     fetcher=fetch_quotes,
+    db_path: Path | None = None,
 ) -> CollectionBatch:
-    """Collect current quotes, save raw/processed files, and return a summary batch."""
+    """Collect current quotes, save raw/processed files, and optionally persist SQLite history."""
     raw_path = data_dir / "raw" / "twelve_data_watchlist_quotes_raw.json"
     processed_path = data_dir / "processed" / "manufacturing_watchlist_quotes.csv"
 
@@ -64,6 +68,11 @@ def collect_symbols(
     summary = summarize(rows)
     LOGGER.info("Saved %s quote rows to %s", len(rows), processed_path)
 
+    db_run_id = None
+    if db_path is not None:
+        db_run_id = save_quote_run(rows, summary, symbols, db_path)
+        LOGGER.info("Saved quote run %s to %s", db_run_id, db_path)
+
     return CollectionBatch(
         symbols=symbols,
         summary=summary,
@@ -71,6 +80,8 @@ def collect_symbols(
         raw_path=raw_path,
         processed_path=processed_path,
         source="api",
+        db_path=db_path,
+        db_run_id=db_run_id,
     )
 
 

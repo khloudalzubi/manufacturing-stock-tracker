@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 
 import pytest
@@ -80,3 +80,17 @@ def test_collect_history_fails_when_api_omits_requested_symbol(tmp_path) -> None
 
     with pytest.raises(StockDataError, match="MMM"):
         collect_history(["CAT", "DE", "HON", "MMM"], "secret-key", tmp_path, 30, fake_fetcher)
+
+
+def test_collect_symbols_can_save_sqlite_quote_run(tmp_path) -> None:
+    fixture = json.loads(QUOTE_FIXTURE_PATH.read_text(encoding="utf-8-sig"))
+
+    def fake_fetcher(symbols, api_key):
+        return fixture
+
+    db_path = tmp_path / "tracker.db"
+    batch = collect_symbols(["CAT", "DE", "HON"], "secret-key", tmp_path, fake_fetcher, db_path)
+
+    assert batch.db_path == db_path
+    assert batch.db_run_id == 1
+    assert db_path.exists()

@@ -14,6 +14,7 @@ __pycache__/
 # Generated API data and logs
 logs/
 tmp/
+data/*.db
 
 # OS files
 .DS_Store

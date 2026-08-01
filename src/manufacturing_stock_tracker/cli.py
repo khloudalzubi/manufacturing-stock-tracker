@@ -1,4 +1,4 @@
-﻿"""Command-line interface for collecting quote and historical momentum data."""
+"""Command-line interface for collecting quote and historical momentum data."""
 
 import argparse
 import os
@@ -6,10 +6,12 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from manufacturing_stock_tracker._version import __version__
 from manufacturing_stock_tracker.api import TwelveDataError
 from manufacturing_stock_tracker.logging_config import configure_logging
 from manufacturing_stock_tracker.pipeline import collect_history, collect_symbols
 from manufacturing_stock_tracker.process import StockDataError, parse_symbols, validate_symbol
+from manufacturing_stock_tracker.storage import DEFAULT_DB_PATH
 
 DEFAULT_SYMBOLS = "CAT,DE,HON,GE,MMM"
 
@@ -40,6 +42,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Number of daily historical observations to request per symbol. Defaults to 30.",
     )
     parser.add_argument(
+        "--save-db",
+        action="store_true",
+        help="Save current quote collection runs to a local SQLite database.",
+    )
+    parser.add_argument(
+        "--db-path",
+        default=str(DEFAULT_DB_PATH),
+        help=f"SQLite database path for --save-db. Defaults to {DEFAULT_DB_PATH}.",
+    )
+    parser.add_argument(
         "--log-level",
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
@@ -48,6 +60,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--log-file",
         help="Optional path for writing logs to a file, such as logs/tracker.log.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        help="Show the installed package version and exit.",
     )
     return parser
 
@@ -86,7 +104,8 @@ def main() -> None:
             batch = collect_history(symbols, api_key, Path("data"), args.history_outputsize)
             _print_history_summary(batch)
         else:
-            batch = collect_symbols(symbols, api_key, Path("data"))
+            db_path = Path(args.db_path) if args.save_db else None
+            batch = collect_symbols(symbols, api_key, Path("data"), db_path=db_path)
             _print_quote_summary(batch)
     except TwelveDataError as exc:
         raise SystemExit(f"Twelve Data error: {exc}") from exc
@@ -121,6 +140,8 @@ def _print_quote_summary(batch) -> None:
     )
     print(f"Raw response: {batch.raw_path}")
     print(f"Processed data: {batch.processed_path}")
+    if batch.db_path and batch.db_run_id:
+        print(f"SQLite run: {batch.db_run_id} in {batch.db_path}")
 
 
 def _print_history_summary(batch) -> None:

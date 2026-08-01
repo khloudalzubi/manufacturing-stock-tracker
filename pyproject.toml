@@ -1,8 +1,11 @@
 [project]
 name = "manufacturing-stock-tracker"
 version = "0.1.0"
-description = "Collect and process Twelve Data quote data for manufacturing companies."
+description = "Collect, validate, and report Twelve Data stock data for a manufacturing watchlist."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["manufacturing", "stocks", "twelve-data", "streamlit", "quarto"]
 authors = [
     { name = "Khloud alZubi", email = "kha0010@auburn.edu" }
 ]
@@ -15,6 +18,20 @@ dependencies = [
     "requests>=2.34.2",
     "streamlit>=1.60.0",
 ]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial",
+]
+
+[project.urls]
+Homepage = "https://github.com/khloudalzubi/manufacturing-stock-tracker"
+Repository = "https://github.com/khloudalzubi/manufacturing-stock-tracker"
+Issues = "https://github.com/khloudalzubi/manufacturing-stock-tracker/issues"
+Documentation = "https://github.com/khloudalzubi/manufacturing-stock-tracker#readme"
 
 [project.scripts]
 manufacturing-stock-tracker = "manufacturing_stock_tracker:main"
