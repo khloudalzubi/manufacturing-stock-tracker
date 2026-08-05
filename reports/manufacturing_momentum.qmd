@@ -100,7 +100,8 @@ ax.set_xlabel("Trading date")
 ax.set_ylabel("Normalized close, first observation = 100")
 ax.legend(title="Symbol", loc="best")
 fig.tight_layout()
-fig
+plt.show()
+plt.close(fig)
 ```
 
 ## Interpretation
